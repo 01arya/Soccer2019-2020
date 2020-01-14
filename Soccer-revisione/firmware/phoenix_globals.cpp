@@ -7,7 +7,6 @@
 
 
 
-
 /*
 *                         *
 **********YATILI***********
@@ -120,7 +119,7 @@ PhoenixLineHandler line_handler;
 */
 
 Adafruit_BNO055 bno=Adafruit_BNO055();
-PhoenixBNO IMU= 
+PhoenixImu _imu = 
 {
   heading_attuale:0,
   heading_target:0,
@@ -129,8 +128,8 @@ PhoenixBNO IMU=
   output_pid:0,
   max_output:180,
   ki:00,
-  kp:2.7,
-  kd:0.001,
+  kp:3.5,
+  kd:0.0050,
   errore_prec:0,
   dt:0.001,
   idt:1000,
@@ -139,7 +138,13 @@ PhoenixBNO IMU=
   time_imu0:0,
   time_imu1:0,
 };
-/*
+
+
+
+//PhoenixBNO IMU;
+
+
+
 PhoenixCamera camera=
 {
   ball_detection:0,
@@ -159,4 +164,4 @@ PhoenixCamera camera=
   sum_i:0,
   max_i:180,
 };
-*/
+

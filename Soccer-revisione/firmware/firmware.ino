@@ -34,10 +34,10 @@ void setup()
   Serial.println("Drive initialized...");
 
   //imu init
-if(!initIMU()==0)
+  if(!initIMU()==0)
    {
     imu_flag=true;
-    PhoenixIMU_handle(&IMU);
+    PhoenixIMU_handle(&_imu);
     Serial.println("IMU initialized...");
    }
    else
@@ -45,6 +45,8 @@ if(!initIMU()==0)
      Serial.println("IMU insn't initialized...");
     
    }
+   //init camera
+  PhoenixCamera_init(&camera);
 }
 
 volatile uint16_t idle_time=0;
@@ -124,7 +126,7 @@ void print_imu()
   t1=millis();
   if(t1-t0>10)
   {
-    printIMU(&IMU);
+    printIMU(&_imu);
     t0=t1;
   }
   return;
@@ -135,30 +137,51 @@ void Imu()
   //si orienta verso la imu
   if(imu_flag==true)
   {
-    double output= get_output_pid(&IMU);
+    double output= get_output_pid(&_imu);
      t=-(output/180);
      y=0;
   }
   else
   {
-    y=-1;
+    y=0;
     t=0;
   }
   PhoenixDrive_setSpeed(&drive,0,y,t);
 }
 
+void seguiNord()
+{
+  double output= get_output_pid(&_imu);
+  t=-(output/180);
+  y=1;
+  x=0;
+  PhoenixDrive_setSpeed(&drive,x,y,t);
+  return;
+}
 
+void segui_palla()
+{
+  if(PhoenixCamera_getBallStatus(&camera)==0)
+  {
+        
+   t=PhoenixCamera_getBallX(&camera);
+   x=0;
+   y=0;
+   //y=PhoenixCamera_getBallY(&camera);
+   PhoenixDrive_setSpeed(&drive,x,y,t);
+  }
+return;
+}
 void loop() 
 {
 
 //testA_BFn();
-readIMU(&IMU);
+readIMU(&_imu);
+PhoenixIMU_handle(&_imu);
+printIMU(&_imu);
 //Imu();
-print_imu();
-
-Imu();
-
-//PhoenixDrive_setSpeed(&drive,0,0.0,255);
+seguiNord();
+PhoenixCamera_handle(&camera);
 
 PhoenixDrive_handle(&drive);
 

@@ -20,14 +20,14 @@ bool imu_flag=false;//controlla se la imu è inizializzata
 int k;
 
 
-void setup() 
+void setup()
 {
-  
+
 
   Serial.begin(9600);
   Serial.println("Serial initialized...");
 
-  for(int i=0;i<NUM_JOINTS;++i) 
+  for(int i=0;i<NUM_JOINTS;++i)
   {
     PhoenixJoint_init(&joints[i]);
   }
@@ -36,14 +36,14 @@ void setup()
   Serial.println("Drive initialized...");
 
   //imu init
-  
+
   if(!PhoenixImu_init(&imu)==0)
    {
     Serial.println("IMU initialized...");
     PhoenixImu_handle(&imu);
     PhoenixImu_setOffset(&imu,imu.heading_attuale);
     imu_flag=true;
-   
+
    }
    else
    {
@@ -63,9 +63,9 @@ volatile uint8_t test_joint_fn_joint_idx=0;
 
 
 
-void testJointsFn() 
+void testJointsFn()
 {
-  switch(test_joint_fn_state) 
+  switch(test_joint_fn_state)
   {
   case 0:
     PhoenixJoint_setSpeed(&joints[test_joint_fn_joint_idx%3], 255);
@@ -146,7 +146,7 @@ void Imu()
 void ball()
 {
   if(imu_flag==true)
- { 
+ {
    if(PhoenixCamera_getBallStatus(&camera)==1)
    {
     //traiettoria
@@ -164,12 +164,12 @@ void ball()
           kiker();
        }*/
     }
-   
-    time=millis(); 
+
+    time=millis();
     x_prec=camera.ball_x;
     y_prec=camera.ball_y;
    }
- 
+
   if (PhoenixCamera_getBallStatus(&camera)==0&&(millis()-time)<(2500))//se non la vedo da poco
   {
     //mi giro verso l'ultimo outpud_pid
@@ -183,9 +183,9 @@ void ball()
       y=0.75;
     }
   }
- 
+
   else
-  { 
+  {
      if((millis()-time)>5000)//se non la vedo da tanto
      {
        t=0.5;
@@ -196,7 +196,7 @@ void ball()
      {
        t=-camera.output_pid/180;
        y=-1;
-     }   
+     }
   }
  }
  if(imu_flag==false)//no bussola
@@ -224,7 +224,7 @@ void ball()
     }
   }
   else
-  { 
+  {
     if((millis()-time)>3000)//se non la vedo da tanto
     {
       t=0.5;
@@ -253,43 +253,43 @@ void ball_prova()
     {
      y=1;
     }
-   
-    time=millis(); 
+
+    time=millis();
     x_prec=camera.ball_x;
     y_prec=camera.ball_y;
    }
- 
+
   PhoenixDrive_setSpeed(&drive,x,y,t);
 
   Serial.print("x= ");
   Serial.print(x);
-  Serial.print("\t"); 
+  Serial.print("\t");
 
   Serial.print("y= ");
   Serial.print(y);
-  Serial.print("\t"); 
+  Serial.print("\t");
 
   Serial.print("t= ");
   Serial.print(t);
   Serial.println();
 }
-void loop() 
+void loop()
 {
 
 //testA_BFn();
 
 PhoenixImu_handle(&imu);
-PhoenixCamera_handle(&camera);
+//PhoenixCamera_handle(&camera);
 
 //testDriveFn();
-//**PhoenixImu_print(&imu);
+PhoenixImu_print(&imu);
 //Serial.println(imu.errore);
-//Imu();
+Imu();
 
-ball_prova();
+//ball_prova();
 
 
 PhoenixDrive_handle(&drive);
 //PhoenixCamera_print(&camera);
-  
+
 }

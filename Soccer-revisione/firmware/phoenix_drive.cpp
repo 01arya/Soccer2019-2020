@@ -8,20 +8,23 @@
  * matrice cinematica robot a 3 assi
  * da velocita motori => forze su robot
  **/
+
+/*
 static double kmatrix[NUM_JOINTS][NUM_JOINTS] =
 {
   //matirce STEORA
-  /*
+  
   {1.0, -0.5, -0.5},
   {0.0, 0.86, -0.86},
   {1.0, 1.0, 1.0}
-  */
+  
   //matrice YATILI
   {1.0, -0.5, -0.5},
   {0.0, 0.86, -0.86},
   {1.0, 1.0, 1.0}
 
 };
+*/
 
 /**
  * matrice inversa cinematica robot a 3 assi

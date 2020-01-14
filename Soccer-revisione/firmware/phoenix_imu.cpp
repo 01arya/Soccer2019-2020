@@ -1,10 +1,8 @@
 
 #include <Arduino.h>
 #include "phoenix_imu.h"
-
-
-
-
+#include "phoenix_globals.h"
+#include "utils.h"
 //inizializzazione della imu
 uint8_t initIMU()
 {
@@ -13,7 +11,7 @@ uint8_t initIMU()
   return 0;
 }
 
-void readIMU(PhoenixBNO* b)
+void readIMU(PhoenixImu* b)
 {
     b->time_imu1=millis();
     if((b->time_imu1-b->time_imu0)>5)
@@ -27,7 +25,7 @@ void readIMU(PhoenixBNO* b)
     }    
 }
 
-void PhoenixIMU_handle(PhoenixBNO* b) 
+void PhoenixIMU_handle(PhoenixImu* b) 
 {
     b->time_imu1=millis();
     if((b->time_imu1-b->time_imu0)>5)
@@ -63,10 +61,11 @@ void PhoenixIMU_handle(PhoenixBNO* b)
   b->output_pid=clamp(b->output_pid,b->max_output);
 
   b->errore_prec=b->errore;
-   
+ 
    return; 
 }
-void printIMU(PhoenixBNO *b)
+
+void printIMU(PhoenixImu *b)
 {
 
     Serial.print("imu_x: ");
@@ -74,13 +73,13 @@ void printIMU(PhoenixBNO *b)
     Serial.print("\t");
 
     
-    Serial.print("heading_target: ");
-    Serial.print(b->heading_target);
+    Serial.print("output_pid: ");
+    Serial.print(b->output_pid);
     Serial.print("\t");
 
     Serial.print("imu_offset: ");
     Serial.print(b->heading_offset);
-    Serial.println("\t");
+    Serial.print("\t");
 
     Serial.print("imu_errore: ");
     Serial.print(b->errore);
@@ -89,7 +88,8 @@ void printIMU(PhoenixBNO *b)
     return;
 }
 
-double get_output_pid(PhoenixBNO* b)
+
+double get_output_pid(PhoenixImu* b)
 {
     return b->output_pid;
 }

@@ -8,21 +8,22 @@
 /**
  * matrice cinematica robot a 3 assi
  * da velocita motori => forze su robot
- **/
+
 static double kmatrix[NUM_JOINTS][NUM_JOINTS] =
 {
   //matirce STEORA
-  /*
+  
   {1.0, -0.5, -0.5},
   {0.0, 0.86, -0.86},
   {1.0, 1.0, 1.0}
-  */
+
   //matrice YATILI
   {1.0, -0.5, -0.5},
   {0.0, 0.86, -0.86},
   {1.0, 1.0, 1.0}
 
 };
+*/
 
 /**
  * matrice inversa cinematica robot a 3 assi
@@ -47,7 +48,7 @@ static double ikmatrix[NUM_JOINTS][NUM_JOINTS] =
  * e regolate.
  * In oltre  imposta d->joints = joint_array
  **/
-void PhoenixDrive_init(PhoenixDrive* d, PhoenixJoint* joint_array) 
+void PhoenixDrive_init(PhoenixDrive* d, PhoenixJoint* joint_array)
 {
   d->vel_x=0;
   d->vel_y=0;
@@ -59,7 +60,7 @@ void PhoenixDrive_init(PhoenixDrive* d, PhoenixJoint* joint_array)
  * imposta le velocita desiderate di d, in funzione dei parametri
  * x, y e r
  */
-void PhoenixDrive_setSpeed(PhoenixDrive* d, double x, double y, double r) 
+void PhoenixDrive_setSpeed(PhoenixDrive* d, double x, double y, double r)
 {
   d->vel_x=x;
   d->vel_y=y;
@@ -67,13 +68,13 @@ void PhoenixDrive_setSpeed(PhoenixDrive* d, double x, double y, double r)
 }
 
 /**
- * Calcola ed assegna le velocita per 
- * ogni Joint presente in d->joints 
+ * Calcola ed assegna le velocita per
+ * ogni Joint presente in d->joints
  **/
-void PhoenixDrive_handle(PhoenixDrive* d) 
+void PhoenixDrive_handle(PhoenixDrive* d)
 {
   double comp_vec[3] = {d->vel_x,d->vel_y,d->rot};
-  
+
 
   for(int r=0;r<NUM_JOINTS;r++)
   {
@@ -84,7 +85,7 @@ void PhoenixDrive_handle(PhoenixDrive* d)
       //calcola la velocità di joints->speed la matrice con la matrice in alto e il vettore {rot, x, y}
     }
     PhoenixJoint_setSpeed(&d->joints[r],speed*255);
-    
+
     //ogni elemento dell'array è riferito ad un motore
     //ogni elemento ha un parametro speed
   }
@@ -92,14 +93,14 @@ void PhoenixDrive_handle(PhoenixDrive* d)
   {
      PhoenixJoint_handle(&d->joints[a]);
   }
-  
+
 }
 
 /**
  * Azzera i valori di velocita desiderate in d (PhoenixDrive)
  * e rilancia PhoenixDrive_handle
  **/
-void PhoenixDrive_reset(PhoenixDrive* d) 
+void PhoenixDrive_reset(PhoenixDrive* d)
 {
   d->vel_x=0;
   d->vel_y=0;

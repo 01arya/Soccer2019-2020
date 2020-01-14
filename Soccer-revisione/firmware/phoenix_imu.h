@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "phoenix_globals.h"
+
 #include "utils.h"
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
@@ -16,6 +16,7 @@ typedef struct
   double heading_attuale;//attuale
   double heading_target;//obbiettivo
   double heading_offset;//differenza rispetto ad un valore di riferimento
+ //offest non mi serve solo nel caso avessi qualche tipo di errore strano
   double errore;//errore attuale
   double output_pid;//il valore di correzione che mi restitusci il pid
   double max_output;//massimo valore di outpid
@@ -33,10 +34,10 @@ typedef struct
 
  unsigned long time_imu0;
  unsigned long time_imu1;
-}PhoenixBNO;
+} PhoenixImu;
 
 uint8_t initIMU();
-void readIMU(PhoenixBNO* b);
-void PhoenixIMU_handle(PhoenixBNO* b); 
-void printIMU(PhoenixBNO* b);
-double get_output_pid(PhoenixBNO* b);
+void readIMU(PhoenixImu* b);
+void PhoenixIMU_handle(PhoenixImu* b); 
+void printIMU(PhoenixImu* b);
+double get_output_pid(PhoenixImu* b);

@@ -13,7 +13,7 @@
  * 4) Se la funzione restituisce un valore diverso da 0
  *    allora bloccare l'inizializzazione e ritornare -1
  **/
-uint8_t PhoenixImu_init(PhoenixImu* m) 
+uint8_t PhoenixImu_init(PhoenixImu* m)
 {
   m->heading_attuale=0;
   m->heading_target=0;
@@ -28,7 +28,7 @@ uint8_t PhoenixImu_init(PhoenixImu* m)
   }
   else
   {
-    
+
     BNO055_init(m->imu);
     //BNO055_init(BNO055* b)
   }
@@ -47,7 +47,7 @@ uint8_t PhoenixImu_init(PhoenixImu* m)
  *
  *
  * Piccola considerazione:
- * Se il modulo BNO055 ha una frequenza di risposta di 
+ * Se il modulo BNO055 ha una frequenza di risposta di
  * 100 Hz (10mS) e in un secondo il loop viene eseguito circa
  * 30.000-35.000 volte (35 kHz o 28uS a loop), è conveniente
  * chiamare continuamente PhoenixImu_handle ? oppure
@@ -55,16 +55,20 @@ uint8_t PhoenixImu_init(PhoenixImu* m)
  * un timer ? :) Nella prossima puntata...
  **/
 
-void PhoenixImu_handle(PhoenixImu* m) 
+void PhoenixImu_handle(PhoenixImu* m)
 {
   BNO055_handle(m->imu);
   //m->imu->BNO055_handle();
-  m->heading_attuale=m->imu->eul_heading;  
+  m->heading_attuale=m->imu->eul_heading;
   m->errore=m->heading_target-(m->heading_attuale-m->heading_offset);
   //m->heading_attuale = cconstraint(m->errore,180,-180);
   m->errore = cconstraint(m->errore,180,-180);
+  /*
+  m->heading_attuale=cconstraint(m->errore,180,-180);
+  m->heading_offset=cconstraint(m->errore,180,-180);
+  */
   //constain serve a limitare i gradi fino a 180 e -180 pittosto che lasciare i gradi a 360
-  
+
   //PID
   //ERRORE PROPORZIONALE
   //quanto è grande l'errore
@@ -85,10 +89,11 @@ void PhoenixImu_handle(PhoenixImu* m)
   per controllare questo faccio clamp
   */
   m->sum_i=clamp(m->sum_i,m->max_i);
- 
+
   m->output_pid=e_p+e_d+m->sum_i;
  // dobbiamo limitare l'output
   m->output_pid=clamp(m->output_pid,m->max_output);
+
 
   m->errore_prec=m->errore;
 }
@@ -97,16 +102,16 @@ void PhoenixImu_print(PhoenixImu*m)
 {
   Serial.print("[attuale= ");
   Serial.print(m->heading_attuale);
-  Serial.print("\t");  
+  Serial.print("\t");
   Serial.print("target= ");
   Serial.print(m->heading_target);
-  Serial.print("\t");  
+  Serial.print("\t");
   Serial.print("offset= ");
   Serial.print(m->heading_offset);
-  Serial.print("\t");  
+  Serial.print("\t");
   Serial.print("output pid= ");
   Serial.print(m->output_pid);
-  Serial.print("\t");  
+  Serial.print("\t");
   Serial.print("errore= ");
   Serial.print(m->errore);
   Serial.print("]");
@@ -117,15 +122,15 @@ void PhoenixImu_print(PhoenixImu*m)
 /**
  * Imposta heading_offset pari ad os
  **/
-void PhoenixImu_setOffset(PhoenixImu* m, double os) 
+void PhoenixImu_setOffset(PhoenixImu* m, double os)
 {
-  m->heading_offset=os;//settiamo l'heading offset 
+  m->heading_offset=os;//settiamo l'heading offset
 }
 
 /**
  * Imposta heading_target pari a t
  **/
-void PhoenixImu_setTarget(PhoenixImu* m, double t) 
+void PhoenixImu_setTarget(PhoenixImu* m, double t)
 {
   m->heading_target=t;//settiamo l'heading target a dove voglio andare a finire
 }
