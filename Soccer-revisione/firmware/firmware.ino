@@ -22,6 +22,8 @@ int k;
 
 void setup() 
 {
+  pinMode(35,OUTPUT);
+  digitalWrite(35, HIGH);
   Serial.begin(9600);
   Serial.println("Serial initialized...");
 
@@ -47,6 +49,8 @@ void setup()
    }
    //init camera
   PhoenixCamera_init(&camera);
+  Serial.println("Pixy is initialized...");
+  digitalWrite(35, LOW);
 }
 
 volatile uint16_t idle_time=0;
@@ -149,27 +153,28 @@ void Imu()
   PhoenixDrive_setSpeed(&drive,0,y,t);
 }
 
-void seguiNord()
+double seguiNord()
 {
   double output= get_output_pid(&_imu);
   t=-(output/180);
-  y=1;
-  x=0;
   PhoenixDrive_setSpeed(&drive,x,y,t);
-  return;
+  return t;
 }
 
 void segui_palla()
 {
   if(PhoenixCamera_getBallStatus(&camera)==0)
+  {    
+   x=PhoenixCamera_getBallX(&camera);
+   y=PhoenixCamera_getBallY(&camera);
+   t=seguiNord();
+  } 
+  else
   {
-        
-   t=PhoenixCamera_getBallX(&camera);
-   x=0;
-   y=0;
-   //y=PhoenixCamera_getBallY(&camera);
-   PhoenixDrive_setSpeed(&drive,x,y,t);
+    y=-1;
+    t=seguiNord();
   }
+  PhoenixDrive_setSpeed(&drive,x,y,t);
 return;
 }
 void loop() 
@@ -179,10 +184,10 @@ void loop()
 readIMU(&_imu);
 PhoenixIMU_handle(&_imu);
 printIMU(&_imu);
-//Imu();
-seguiNord();
 PhoenixCamera_handle(&camera);
 
+//seguiNord();
+segui_palla();
 PhoenixDrive_handle(&drive);
 
   
