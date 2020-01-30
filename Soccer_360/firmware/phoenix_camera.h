@@ -9,7 +9,7 @@
  * phoenix_camera.h
  **/
 
-#pragma once
+
 #include <Arduino.h>
 #define BALL_SIG 1
 #define BALL_RELIABLE_AGE 5
