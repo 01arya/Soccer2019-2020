@@ -3,9 +3,6 @@
  * phoenix_camera.h
  **/
 #include "phoenix_camera.h"
-#include "phoenix_params.h"
-#include "utils.h"
-#include <Arduino.h>
 #include <Pixy2.h>
 
 Pixy2 _pixy;
@@ -36,6 +33,7 @@ void PhoenixCamera_init(PhoenixCamera* p)
   return;
 }
 
+
 /**
  * Interroga il modulo pixy, richiedendo il numero di blocchi
  * visti.
@@ -57,6 +55,7 @@ void PhoenixCamera_init(PhoenixCamera* p)
  * 5) Se non viene rilevato nessun blocco oppure non viene rilevata
  *    la palla, decrementare la variabile ball_detection
  **/
+
 void PhoenixCamera_handle(PhoenixCamera* p)
 {
   p->ball_detection=0;
@@ -66,7 +65,7 @@ void PhoenixCamera_handle(PhoenixCamera* p)
 
       if(_pixy.ccc.blocks[i].m_signature==BALL_SIG)
       {
-        if(_pixy.ccc.blocks[i].m_age>BALL_RELIABLE_AGE)
+        if(_pixy.ccc.blocks[i].m_age>BALL_RELIABLE_CTR)
         {
           p->ball_detection=1;
           p->ball_h=_pixy.ccc.blocks[i].m_height;
@@ -74,33 +73,67 @@ void PhoenixCamera_handle(PhoenixCamera* p)
           p->ball_x_t=_pixy.ccc.blocks[i].m_x;
           p->ball_y_t=_pixy.ccc.blocks[i].m_y;
 
+
           //calcolo per spostare il punto centrale della pixy
           //x'=x-deltaX
           //y'=-y+deltaY
+         
+          /*TENTATIVO FUNZIONANTE*/
           p->ball_x=p->ball_x_t-DELTA_X_CAMERA;
           p->ball_y=-p->ball_y_t+DELTA_Y_CAMERA;
           //fine calcolo spostamento
-          
-          p->errore=((int)p->ball_x-160);
-          p->errore = cconstraint(p->errore,180,-180);
-          //ERRORE PROPORZIONALE
-          //quanto è grande l'errore
-          double e_p=p->errore*p->kp;
-          //ERRORE DERIVATIVO
-          // calcola l'errore nel tempo
-          double e_d=((p->errore-p->errore_prec)*p->idt)*p->kd;
-          //ERRORE INTERGRALE
-          //errori che aumentano nel tempo
-          p->sum_i+=p->ki*p->errore*p->dt;
 
-          p->sum_i=clamp(p->sum_i,p->max_i);
-          p->output_pid=e_p+e_d+p->sum_i;
-          // dobbiamo limitare l'output
-          p->output_pid=clamp(p->output_pid,p->max_output);
+            p->errore=((int)p->ball_x-160);
+            p->errore = cconstraint(p->errore,180,-180);
+            //ERRORE PROPORZIONALE
+            //quanto è grande l'errore
+            double e_p=p->errore*p->kp;
+            //ERRORE DERIVATIVO
+            // calcola l'errore nel tempo
+            double e_d=((p->errore-p->errore_prec)*p->idt)*p->kd;
+            //ERRORE INTERGRALE
+            //errori che aumentano nel tempo
+            p->sum_i+=p->ki*p->errore*p->dt;
 
-          p->errore_prec=p->errore;
+            p->sum_i=clamp(p->sum_i,p->max_i);
+            p->output_pid=e_p+e_d+p->sum_i;
+            // dobbiamo limitare l'output
+            p->output_pid=clamp(p->output_pid,p->max_output);
+
+            p->errore_prec=p->errore;
         }
+        else
+        {
+          p->ball_detection=0;
+        }
+        
       }
+      if(_pixy.ccc.blocks[i].m_signature==GOAL_SIG)
+      {
+        if(_pixy.ccc.blocks[i].m_age>GOAL_RELIABLE_CTR)
+        {
+          p->goal_detection=1;
+          p->goal_h=_pixy.ccc.blocks[i].m_height;
+          p->goal_w=_pixy.ccc.blocks[i].m_width;
+          p->goal_x_t=_pixy.ccc.blocks[i].m_x;
+          p->goal_y_t=_pixy.ccc.blocks[i].m_y;
+
+          //calcolo per spostare il punto centrale della pixy
+          //x'=x-deltaX
+          //y'=-y+deltaY
+         
+          /*TENTATIVO FUNZIONANTE*/
+          p->ball_x=p->ball_x_t-DELTA_X_CAMERA;
+          p->ball_y=-p->ball_y_t+DELTA_Y_CAMERA;
+          //fine calcolo spostamento
+        }
+        else
+        {
+          p->goal_detection=0;
+        }
+        
+      }
+     
     }
 }
 
@@ -144,6 +177,48 @@ uint16_t PhoenixCamera_getBallH(PhoenixCamera* p)
   return p->ball_h;
 }
 
+
+
+
+/**
+ * Restituisce il valore goal_detection
+ **/
+uint8_t PhoenixCamera_getGoalStatus(PhoenixCamera* p)
+{
+  return p->goal_detection;
+}
+
+/**
+ * Restituisce il valore goal_x
+ **/
+uint16_t PhoenixCamera_getGoalX(PhoenixCamera* p)
+{
+  return p->goal_x;
+}
+
+/**
+ * Restituisce il valore goal_y
+ **/
+uint16_t PhoenixCamera_getGoalY(PhoenixCamera* p)
+{
+  return p->goal_y;
+}
+
+/**
+ * Restituisce il valore goal_w
+ **/
+uint16_t PhoenixCamera_getGoalW(PhoenixCamera* p)
+{
+  return p->goal_w;
+}
+
+/**
+ * Restituisce il valore goal_h
+ **/
+uint16_t PhoenixCamera_getGoalH(PhoenixCamera* p)
+{
+  return p->goal_h;
+}
 void PhoenixCamera_print(PhoenixCamera*p)
 {
   Serial.print("[x attuale= ");

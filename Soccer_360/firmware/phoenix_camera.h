@@ -9,19 +9,27 @@
  * phoenix_camera.h
  **/
 
-
+#pragma once
 #include <Arduino.h>
-#define BALL_SIG 1
-#define BALL_RELIABLE_AGE 5
+#include "phoenix_params.h"
+#include "utils.h"
 
-typedef struct {
-  int8_t ball_detection;
+typedef struct 
+{
+  bool ball_detection;
   uint16_t ball_x;//definitivo dopo lo spostamento
+  uint16_t ball_x_t;//temporaneo
   uint16_t ball_y;//definitivo dopo lo spostamento
-  uint16_t ball_x_t;//temporanea per il calcolo
-  uint16_t ball_y_t;//temporanea per il calcolo
+  uint16_t ball_y_t;//temporaneo
   uint16_t ball_w;
   uint16_t ball_h;
+  bool goal_detection;
+  uint16_t goal_x;//definitivo dopo lo spostamento
+  uint16_t goal_x_t;//temporaneo
+  uint16_t goal_y;//definitivo dopo lo spostamento
+  uint16_t goal_y_t;//temporaneo
+  uint16_t goal_w;
+  uint16_t goal_h;
   //per il pid
   double ki;//ERRORE INTERGRALE
   double kp;//ERRORE PROPORZIONALE
@@ -44,6 +52,7 @@ typedef struct {
  * l'oggetto pixy (Pixy) tramite il metodo pixy.init()
  **/
 void PhoenixCamera_init(PhoenixCamera* p);
+
 
 /**
  * Interroga il modulo pixy, richiedendo il numero di blocchi
@@ -93,4 +102,36 @@ uint16_t PhoenixCamera_getBallW(PhoenixCamera* p);
  **/
 uint16_t PhoenixCamera_getBallH(PhoenixCamera* p);
 
+
+
+
+/**
+ * Restituisce il valore goal_detection
+ **/
+uint8_t PhoenixCamera_getGoalStatus(PhoenixCamera* p);
+
+/**
+ * Restituisce il valore goal_x
+ **/
+uint16_t PhoenixCamera_getGoalX(PhoenixCamera* p);
+
+/**
+ * Restituisce il valore goal_y
+ **/
+uint16_t PhoenixCamera_getGoalY(PhoenixCamera* p);
+
+/**
+ * Restituisce il valore goal_w
+ **/
+uint16_t PhoenixCamera_getGoalW(PhoenixCamera* p);
+
+/**
+ * Restituisce il valore goal_h
+ **/
+uint16_t PhoenixCamera_getGoalH(PhoenixCamera* p);
+
+/**
+ * Print di alcuni dati della camera
+ **/
 void PhoenixCamera_print(PhoenixCamera*p);
+

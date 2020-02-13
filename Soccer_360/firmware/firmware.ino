@@ -20,6 +20,9 @@ double time;//tempo in cui è stata vista l'ultima volta la palla
 bool imu_flag=false;//controlla se la imu è inizializzata
 int k;
 
+
+unsigned long t1_p=millis();//pixy_gioco
+
 void setup()
 {
   pinMode(35,OUTPUT);
@@ -160,26 +163,45 @@ double seguiNord()
   PhoenixDrive_setSpeed(&drive,x,y,t);
   return t;
 }
+void triangolo(unsigned long t1_p)
+{
+  unsigned long t2_p=millis();
+  if(t2_p<t1_p)
+  {
+    x=-1;
+    y=-1;      
+  }
+  else
+  {
+    x=+1;
+    y=-1;
+  }
+  double output= get_output_pid(&_imu);
+  t=-(output/180);
+  PhoenixDrive_setSpeed(&drive,x,y,t);
+}
 
 void segui_palla()
 {
   //se vedo la palla
+
   if(PhoenixCamera_getBallStatus(&camera)==0)
   {
-    //se la palla è davantri a noi
+    //se la palla è davanti a noi
     if(PhoenixCamera_getBallY(&camera)>0)
     {
       x=PhoenixCamera_getBallX(&camera);
       y=PhoenixCamera_getBallY(&camera);
       t=seguiNord();
-    }    
-    /*
-    bisogna vedere come far girare il robot e fargli prendere la palla,
-    avendo inizialmente la palla dietro al robot
-    */
+    } 
+    //se la palla sta dietro a noi
+    else
+    {
+      x=PhoenixCamera_getGoalX(&camera)-PhoenixCamera_getBallX(&camera);
+      y=PhoenixCamera_getGoalY(&camera)-PhoenixCamera_getBallY(&camera);
+      t=seguiNord(); 
+    }
   }
-
-
   PhoenixDrive_setSpeed(&drive,x,y,t);
 return;
 }
@@ -193,7 +215,9 @@ printIMU(&_imu);
 PhoenixCamera_handle(&camera);
 
 //seguiNord();
-segui_palla();
+t1_p=millis();
+triangolo(t1_p);
+//segui_palla(t1_p);
 PhoenixDrive_handle(&drive);
 
 

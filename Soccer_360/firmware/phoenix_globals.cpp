@@ -6,7 +6,6 @@
 #include "phoenix_globals.h"
 
 
-
 /*
 *                         *
 **********YATILI***********
@@ -149,11 +148,18 @@ PhoenixCamera camera=
 {
   ball_detection:0,
   ball_x:0,
-  ball_y:0,
   ball_x_t:0,
+  ball_y:0,
   ball_y_t:0,
   ball_w:0,
   ball_h:0,
+  goal_detection: 0,
+  goal_x:0,
+  goal_x_t:0,
+  goal_y:0,
+  goal_y_t:0,
+  goal_w:0,
+  goal_h:0,
   ki:00,
   kp:0,
   kd:0.000,
