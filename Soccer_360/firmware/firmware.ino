@@ -203,6 +203,6 @@ segui_palla();
 */
 seguiNord();
 PhoenixDrive_handle(&drive);
-print_imu();
+printIMU(&_imu);
 
 }

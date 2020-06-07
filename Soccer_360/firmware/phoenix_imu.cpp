@@ -77,10 +77,15 @@ void printIMU(PhoenixImu *b)
     Serial.print(b->output_pid);
     Serial.print("\t");
 
+/*
     Serial.print("imu_offset: ");
     Serial.print(b->heading_offset);
     Serial.print("\t");
 
+    Serial.print("imu_errore: ");
+    Serial.print(b->errore);
+    Serial.println("\t");
+*/
 
 
     return;
