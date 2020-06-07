@@ -127,9 +127,9 @@ PhoenixImu _imu =
   errore:0,
   output_pid:0,
   max_output:180,
-  ki:00,
+  ki:0.0002,
   kp:3.5,
-  kd:0.0050,
+  kd:0.0010,
   errore_prec:0,
   dt:0.001,
   idt:1000,
@@ -139,19 +139,29 @@ PhoenixImu _imu =
   time_imu1:0,
 };
 
+/*
+  ki:00,
+  kp:3.5,
+  kd:0.0050,
 
+  ki:0.0002,
+  kp:3.5,
+  kd:0.0010,
+*/
 
 //PhoenixBNO IMU;
 
-
+/*
 
 PhoenixCamera camera=
 {
   ball_detection:0,
   ball_x:0,
   ball_y:0,
+  
   ball_x_t=0,
   ball_y_t=0,
+ 
   ball_w:0,
   ball_h:0,
   ki:00,
@@ -166,3 +176,5 @@ PhoenixCamera camera=
   sum_i:0,
   max_i:180,
 };
+
+ */

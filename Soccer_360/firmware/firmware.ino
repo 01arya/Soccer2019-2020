@@ -47,10 +47,12 @@ void setup()
      Serial.println("IMU insn't initialized...");
 
    }
+   /*
    //init camera
   PhoenixCamera_init(&camera);
   Serial.println("Pixy is initialized...");
   digitalWrite(35, LOW);
+  */
 }
 
 volatile uint16_t idle_time=0;
@@ -160,7 +162,7 @@ double seguiNord()
   PhoenixDrive_setSpeed(&drive,x,y,t);
   return t;
 }
-
+/*
 void segui_palla()
 {
   //se vedo la palla
@@ -173,28 +175,34 @@ void segui_palla()
       y=PhoenixCamera_getBallY(&camera);
       t=seguiNord();
     }    
-    /*
-    bisogna vedere come far girare il robot e fargli prendere la palla,
-    avendo inizialmente la palla dietro al robot
-    */
+    
+    //bisogna vedere come far girare il robot e fargli prendere la palla,
+    //avendo inizialmente la palla dietro al robot
+    
   }
 
 
   PhoenixDrive_setSpeed(&drive,x,y,t);
 return;
 }
+*/
+
+
 void loop()
 {
 
 //testA_BFn();
 readIMU(&_imu);
 PhoenixIMU_handle(&_imu);
-printIMU(&_imu);
+Imu();
+/*
 PhoenixCamera_handle(&camera);
 
 //seguiNord();
 segui_palla();
+*/
+seguiNord();
 PhoenixDrive_handle(&drive);
-
+print_imu();
 
 }
